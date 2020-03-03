@@ -104,4 +104,16 @@ public class Coin {
         coins.add(new Coin("Stellar", "XLM", 0.061529, -2.09, 1.78, 25.85, 1232939271.42, 502557303.372596));
         return coins;
     }
+
+    public static Coin searchCoin(String search) {
+        ArrayList<Coin> coins = getCoins();
+        Coin coin = new Coin();
+        for (int i = 0; i <coins.size(); i++) {
+            if (search.equalsIgnoreCase(coins.get(i).getName())) {
+                coin = coins.get(i);
+                break;
+            }
+        }
+        return coin;
+    }
 }
