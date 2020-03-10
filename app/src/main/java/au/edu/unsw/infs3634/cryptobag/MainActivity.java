@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     //Test1
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        ArrayList<Coin> myDataset = Coin.getCoins();
 
         mAdapter = new RecyclerViewAdapter(myDataset);
         recyclerView.setAdapter(mAdapter);
