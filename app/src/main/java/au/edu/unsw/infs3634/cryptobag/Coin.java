@@ -109,7 +109,7 @@ public class Coin {
         ArrayList<Coin> coins = getCoins();
         Coin coin = new Coin();
         for (int i = 0; i <coins.size(); i++) {
-            if (search.equalsIgnoreCase(coins.get(i).getName())) {
+            if (search.equalsIgnoreCase(coins.get(i).getSymbol())) {
                 coin = coins.get(i);
                 break;
             }

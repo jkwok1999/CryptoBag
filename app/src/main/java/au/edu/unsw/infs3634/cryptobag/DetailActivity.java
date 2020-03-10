@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
 
+    ImageView logo;
+    TextView name;
+    TextView symbol;
     TextView value;
     TextView change1h;
     TextView change24h;
@@ -19,6 +24,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView volume;
     Button search;
     Coin newCoin;
+
+    private static final String TAG = "DetailActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +38,28 @@ public class DetailActivity extends AppCompatActivity {
 
         newCoin = Coin.searchCoin(message);
 
-        value.setText(Double.toString(newCoin.getValue());
-        change1h.setText(Double.toString(newCoin.getChange1h());
-        change24h.setText(Double.toString(newCoin.getChange24h());
-        change7d.setText(Double.toString(newCoin.getChange7d());
-        marketcap.setText(Double.toString(newCoin.getMarketcap());
-        volume.setText(Double.toString(newCoin.getVolume());
+        Log.d(TAG,"Coin-Symbol =");
+
+        //System.out.println(newCoin.getName());
+
+        name = findViewById(R.id.name);
+        symbol = findViewById(R.id.symbol);
+        value = findViewById(R.id.value);
+        change1h = findViewById(R.id.change1h);
+        change24h = findViewById(R.id.change24h);
+        change7d = findViewById(R.id.change7d);
+        marketcap = findViewById(R.id.marketcap);
+        volume = findViewById(R.id.volume);
+        search = findViewById(R.id.search);
+
+        name.setText(newCoin.getName());
+        symbol.setText(newCoin.getSymbol());
+        value.setText(Double.toString(newCoin.getValue()));
+        change1h.setText(Double.toString(newCoin.getChange1h()));
+        change24h.setText(Double.toString(newCoin.getChange24h()));
+        change7d.setText(Double.toString(newCoin.getChange7d()));
+        marketcap.setText(Double.toString(newCoin.getMarketcap()));
+        volume.setText(Double.toString(newCoin.getVolume()));
     }
 
     public void clickButton(View view) {
