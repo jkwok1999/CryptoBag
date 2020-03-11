@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
+
 public class DetailActivity extends AppCompatActivity {
 
     ImageView logo;
@@ -34,11 +36,13 @@ public class DetailActivity extends AppCompatActivity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);//Gets the intent with the specified key
+        //String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);//Gets the intent with the specified key
+        int position = intent.getIntExtra(MainActivity.EXTRA_MESSAGE, 0);
 
-        newCoin = Coin.searchCoin(message);
+        //newCoin = Coin.searchCoin(message);
+        newCoin = Coin.getCoins().get(position);
 
-        Log.d(TAG,"Coin-Symbol =");
+        //Log.d(TAG,"Coin-Symbol ="); //Doesn't log at the moment
 
         //System.out.println(newCoin.getName());
 
@@ -51,6 +55,8 @@ public class DetailActivity extends AppCompatActivity {
         marketcap = findViewById(R.id.marketcap);
         volume = findViewById(R.id.volume);
         search = findViewById(R.id.search);
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
         name.setText(newCoin.getName());
         symbol.setText(newCoin.getSymbol());

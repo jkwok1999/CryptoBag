@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -25,24 +24,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        //button = (Button) findViewById(R.id.button);
+
+        recyclerView = (RecyclerView) findViewById(R.id.rvList);
 
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Coin> myDataset = Coin.getCoins();
+        //ArrayList<Coin> myDataset = Coin.getCoins();
 
-        mAdapter = new RecyclerViewAdapter(myDataset);
+        CoinAdapter.RecyclerViewClickListener listener = new CoinAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                newActivity(position);
+            }
+        };
+
+        mAdapter = new CoinAdapter(Coin.getCoins(), listener);
         recyclerView.setAdapter(mAdapter);
 
     }
 
 
     /** Called when the user taps the Send button */
-    //public void newActivity(View view) {
-    //    Intent intent = new Intent(this, DetailActivity.class); //Creates new intent, linking the context('this' activity) to a class ('DetailActivity')
-    //    intent.putExtra(EXTRA_MESSAGE, "ETH");
-    //    startActivity(intent); //Starts the intent/instance of the DisplayMessageActivity that is specified by the intent
-    //}
+    public void newActivity(int position) {
+        Intent intent = new Intent(this, DetailActivity.class); //Creates new intent, linking the context('this' activity) to a class ('DetailActivity')
+        intent.putExtra(EXTRA_MESSAGE, position);
+        startActivity(intent); //Starts the intent/instance of the DisplayMessageActivity that is specified by the intent
+    }
 }
