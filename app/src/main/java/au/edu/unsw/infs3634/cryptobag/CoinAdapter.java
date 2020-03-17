@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder> {
@@ -40,9 +41,9 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
 
             mListener = listener;
             v.setOnClickListener(this);
-            coinName = (TextView) itemView.findViewById(R.id.name);
-            value = (TextView) itemView.findViewById(R.id.value);
-            change1h = (TextView) itemView.findViewById(R.id.value);
+            coinName = (TextView) itemView.findViewById(R.id.tvName);
+            value = (TextView) itemView.findViewById(R.id.tvValue);
+            change1h = (TextView) itemView.findViewById(R.id.tvChange);
             itemView.setOnClickListener(this);
         }
 
@@ -72,9 +73,12 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
     @Override
     public void onBindViewHolder(CoinViewHolder holder, int position) {
         //holder.textView.setText(mCoins.get(position));
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
         Coin coin = mCoins.get(position);
         holder.coinName.setText(coin.getName());
-        holder.value.setText(coin.getName());
+        holder.value.setText(formatter.format(coin.getValue()));
         holder.change1h.setText(Double.toString(coin.getChange1h()) + " %");
     }
 

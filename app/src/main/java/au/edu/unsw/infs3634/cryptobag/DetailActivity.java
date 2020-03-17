@@ -61,15 +61,17 @@ public class DetailActivity extends AppCompatActivity {
         name.setText(newCoin.getName());
         symbol.setText(newCoin.getSymbol());
         value.setText(Double.toString(newCoin.getValue()));
-        change1h.setText(Double.toString(newCoin.getChange1h()));
-        change24h.setText(Double.toString(newCoin.getChange24h()));
-        change7d.setText(Double.toString(newCoin.getChange7d()));
+        change1h.setText(String.valueOf(newCoin.getChange1h()) + " %");
+        change24h.setText(String.valueOf(newCoin.getChange24h()) + " %");
+        change7d.setText(String.valueOf(newCoin.getChange7d()) + " %");
         marketcap.setText(Double.toString(newCoin.getMarketcap()));
         volume.setText(Double.toString(newCoin.getVolume()));
-    }
 
-    public void clickButton(View view) {
-        googleCoin(newCoin.getName());
+        search.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                googleCoin(newCoin.getName());
+            }
+        });
     }
 
     public void googleCoin (String coinName) {
