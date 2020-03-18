@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+//Create CoinAdapter to get data from Coin.java to display in the RecyclerView
 public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder> {
     private ArrayList<Coin> mCoins;
     private RecyclerViewClickListener mListener;
@@ -18,22 +19,26 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
     //private TextView change1h;
     public static final String EXTRA_MESSAGE = "au.edu.unsw.infs3634.cryptobag.MESSAGE";
 
+    //Constructor for the CoinAdapter
     public CoinAdapter(ArrayList<Coin> coins, RecyclerViewClickListener listener) {
         mCoins = coins;
         mListener = listener;
 
     }
 
+    //Create an interface RecyclerViewClickListener to be instantiated later
     public interface RecyclerViewClickListener {
         void onClick(View view, int position);
     }
 
+    //Create a CoinViewHolder class that manages the coin_list_row xml file
     public class CoinViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //public TextView textView;
         private TextView coinName;
         private TextView value;
         private TextView change1h;
 
+        //Constructor for the CoinViewHolder
         public CoinViewHolder(View v, RecyclerViewClickListener listener) {
             super(v);
             //textView = v;
@@ -70,10 +75,12 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         return new CoinViewHolder(v, mListener);
     }
 
+    //Override the onBindViewHolder method to be able to access widgets inside the view
     @Override
     public void onBindViewHolder(CoinViewHolder holder, int position) {
         //holder.textView.setText(mCoins.get(position));
 
+        //Create a formatter to help round the dollar values to 2dp and also to add a "$"
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
         Coin coin = mCoins.get(position);

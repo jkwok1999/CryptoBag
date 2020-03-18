@@ -1,6 +1,9 @@
 package au.edu.unsw.infs3634.cryptobag;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -40,43 +43,11 @@ public class DetailActivity extends AppCompatActivity {
         int position = intent.getIntExtra(MainActivity.EXTRA_MESSAGE, 0);
 
         //newCoin = Coin.searchCoin(message);
-        newCoin = Coin.getCoins().get(position);
+        //newCoin = Coin.getCoins().get(position);
 
-        //Log.d(TAG,"Coin-Symbol ="); //Doesn't log at the moment
-
-        //System.out.println(newCoin.getName());
-
-        name = findViewById(R.id.name);
-        symbol = findViewById(R.id.symbol);
-        value = findViewById(R.id.value);
-        change1h = findViewById(R.id.change1h);
-        change24h = findViewById(R.id.change24h);
-        change7d = findViewById(R.id.change7d);
-        marketcap = findViewById(R.id.marketcap);
-        volume = findViewById(R.id.volume);
-        search = findViewById(R.id.search);
-
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-
-        name.setText(newCoin.getName());
-        symbol.setText(newCoin.getSymbol());
-        value.setText(Double.toString(newCoin.getValue()));
-        change1h.setText(String.valueOf(newCoin.getChange1h()) + " %");
-        change24h.setText(String.valueOf(newCoin.getChange24h()) + " %");
-        change7d.setText(String.valueOf(newCoin.getChange7d()) + " %");
-        marketcap.setText(Double.toString(newCoin.getMarketcap()));
-        volume.setText(Double.toString(newCoin.getVolume()));
-
-        search.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                googleCoin(newCoin.getName());
-            }
-        });
-    }
-
-    public void googleCoin (String coinName) {
-        String url = "https://www.google.com/search?q=" + coinName;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = new DetailFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.scrollDetailActivity, fragment).commit();
     }
 }
