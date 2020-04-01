@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
+
+import au.edu.unsw.infs3634.cryptobag.Entities.Coin;
 
 //Create CoinAdapter to get data from Coin.java to display in the RecyclerView
 public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder> {
-    private ArrayList<Coin> mCoins;
+    private List<Coin> mCoins;
     private RecyclerViewClickListener mListener;
     //private TextView coinName;
     //private TextView value;
@@ -20,7 +23,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
     public static final String EXTRA_MESSAGE = "au.edu.unsw.infs3634.cryptobag.MESSAGE";
 
     //Constructor for the CoinAdapter
-    public CoinAdapter(ArrayList<Coin> coins, RecyclerViewClickListener listener) {
+    public CoinAdapter(List<Coin> coins, RecyclerViewClickListener listener) {
         mCoins = coins;
         mListener = listener;
 
@@ -85,8 +88,11 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
 
         Coin coin = mCoins.get(position);
         holder.coinName.setText(coin.getName());
-        holder.value.setText(formatter.format(coin.getValue()));
-        holder.change1h.setText(Double.toString(coin.getChange1h()) + " %");
+        //holder.value.setText(formatter.format(coin.getValue()));
+        //holder.change1h.setText(Double.toString(coin.getChange1h()) + " %");
+
+        holder.value.setText(NumberFormat.getCurrencyInstance().format(Double.valueOf(coin.getPriceUsd())));
+        holder.change1h.setText(coin.getPercentChange24h() + " %");
     }
 
     @Override

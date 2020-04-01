@@ -12,7 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import au.edu.unsw.infs3634.cryptobag.Entities.Coin;
+import au.edu.unsw.infs3634.cryptobag.Entities.CoinLoreResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,15 +63,19 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        Gson gson = new Gson();
+        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.json, CoinLoreResponse.class);
+        List<Coin> coins = response.getData();
+
         //
-        mAdapter = new CoinAdapter(Coin.getCoins(), listener);
+        mAdapter = new CoinAdapter(coins, listener);
         recyclerView.setAdapter(mAdapter);
     }
 
     //Method to start a new activity (DetailActivity) by using an intent
     public void newActivity(int position) {
         Intent intent = new Intent(this, DetailActivity.class); //Creates new intent, linking the context('this' activity) to a class ('DetailActivity')
-        intent.putExtra(EXTRA_MESSAGE, position); //Specifies the position on the
+        intent.putExtra("position", position); //Specifies the position on the
         startActivity(intent); //Starts the intent/instance of the DisplayMessageActivity that is specified by the intent
     }
 }

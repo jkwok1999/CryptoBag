@@ -13,7 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.text.NumberFormat;
+import java.util.List;
+
+import au.edu.unsw.infs3634.cryptobag.Entities.Coin;
+import au.edu.unsw.infs3634.cryptobag.Entities.CoinLoreResponse;
 
 
 /**
@@ -74,6 +80,8 @@ public class DetailFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -94,6 +102,11 @@ public class DetailFragment extends Fragment {
         volume = v.findViewById(R.id.volume);
         search = v.findViewById(R.id.search);
 
+        //Find a coin in the json object
+        Gson gson = new Gson();
+        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.json, CoinLoreResponse.class);
+        List<Coin> coins = response.getData();
+
         //
         boolean wide = false;
         if(this.getArguments() != null) {
@@ -102,27 +115,29 @@ public class DetailFragment extends Fragment {
 
         //If it is a wide screen then,
         if(wide) {
-            newCoin = Coin.getCoins().get(getArguments().getInt("position"));
+            newCoin = coins.get(getArguments().getInt("position"));
         }
         //If it is not a wide screen, we just use an intent (the same way we ran the DetailActivity before)
         //Here we get the intent that was sent from the MainActivity class
         else {
             Intent intent = getActivity().getIntent();
             position = intent.getIntExtra("position",0);
-            newCoin = Coin.getCoins().get(position);
+            newCoin = coins.get(position);
+            System.out.println(newCoin.getName());
         }
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
         //Sets the text of the widgets in the layout file to the values of the coin object we got earlier
+        System.out.println(newCoin.getName());
         name.setText(newCoin.getName());
         symbol.setText(newCoin.getSymbol());
-        value.setText(Double.toString(newCoin.getValue()));
-        change1h.setText(String.valueOf(newCoin.getChange1h()) + " %");
-        change24h.setText(String.valueOf(newCoin.getChange24h()) + " %");
-        change7d.setText(String.valueOf(newCoin.getChange7d()) + " %");
-        marketcap.setText(Double.toString(newCoin.getMarketcap()));
-        volume.setText(Double.toString(newCoin.getVolume()));
+        value.setText(formatter.format(Double.valueOf(newCoin.getPriceUsd())));
+        change1h.setText(String.valueOf(newCoin.getPercentChange1h() + " %"));
+        change24h.setText(String.valueOf(newCoin.getPercentChange24h()) + " %");
+        change7d.setText(String.valueOf(newCoin.getPercentChange7d()) + " %");
+        marketcap.setText(formatter.format(Double.valueOf(newCoin.getMarketCapUsd())));
+        volume.setText(Double.toString(newCoin.getVolume24()));
 
         //Listener that allows the search button to do what is under onClick() when clicked
         search.setOnClickListener(new View.OnClickListener() {

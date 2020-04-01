@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import java.text.NumberFormat;
 
+import au.edu.unsw.infs3634.cryptobag.Entities.Coin;
+
 public class DetailActivity extends AppCompatActivity {
 
     ImageView logo;
