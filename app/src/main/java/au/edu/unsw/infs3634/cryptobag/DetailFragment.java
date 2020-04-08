@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +16,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.List;
 
 import au.edu.unsw.infs3634.cryptobag.Entities.Coin;
 import au.edu.unsw.infs3634.cryptobag.Entities.CoinLoreResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetailFragment extends Fragment {
 
     //Declare all the variables for the elements we will be interacting with in the layout
@@ -41,47 +42,51 @@ public class DetailFragment extends Fragment {
     private TextView volume;
     private Button search;
     private Coin newCoin;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static final String ARG_ITEM_ID = "item_id";
+    private static final String TAG = "DetailFragment";
 
     public DetailFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
-        DetailFragment fragment = new DetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+        if(getArguments().containsKey(ARG_ITEM_ID)) {
+            //Create Retrofit Instance & parse the retrieved JSON using GSON deserialiser
+            Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.coinlore.net/").addConverterFactory(GsonConverterFactory.create()).build();
+
+            //Get service & Call object for the request
+            CoinService service = retrofit.create(CoinService.class);
+            Call<CoinLoreResponse> coinsCall = service.getCoins();
+
+            //Execute network request
+            //Response<CoinLoreResponse> coinsResponse = coinsCall.execute();
+            coinsCall.enqueue(new Callback<CoinLoreResponse>() {
+                @Override
+                public void onResponse(Call<CoinLoreResponse> call, Response<CoinLoreResponse> response) {
+                    Log.d(TAG, "onResponse: SUCCESS");
+                    List<Coin> coins = response.body().getData();
+                    //Add loop
+                    for(Coin coin : coins) {
+                        if(coin.getId().equals(getArguments().getString(ARG_ITEM_ID))) {
+                            newCoin = coin;
+                            break;
+                        }
+                    }
+                    updateUi();
+                    DetailFragment.this.getActivity().setTitle(newCoin.getName());
+                }
+
+
+
+                @Override
+                public void onFailure(Call<CoinLoreResponse> call, Throwable t) {
+                    Log.d(TAG, "onFailure: FAILURE");
+                }
+            });
         }
-
-
     }
 
     @Override
@@ -89,25 +94,14 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_detail, container, false);
-        int position = 0;
-
-        //Pair the variables in the file with the widgets in the layout file
-        name = v.findViewById(R.id.name);
-        symbol = v.findViewById(R.id.symbol);
-        value = v.findViewById(R.id.value);
-        change1h = v.findViewById(R.id.change1h);
-        change24h = v.findViewById(R.id.change24h);
-        change7d = v.findViewById(R.id.change7d);
-        marketcap = v.findViewById(R.id.marketcap);
-        volume = v.findViewById(R.id.volume);
-        search = v.findViewById(R.id.search);
+        //int position = 0;
 
         //Find a coin in the json object
-        Gson gson = new Gson();
-        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.json, CoinLoreResponse.class);
-        List<Coin> coins = response.getData();
+        //Gson gson = new Gson();
+        //CoinLoreResponse response = gson.fromJson(CoinLoreResponse.json, CoinLoreResponse.class);
+        //List<Coin> coins = response.getData();
 
-        //
+        /*
         boolean wide = false;
         if(this.getArguments() != null) {
             wide = getArguments().getBoolean("wide", true);
@@ -123,28 +117,12 @@ public class DetailFragment extends Fragment {
             Intent intent = getActivity().getIntent();
             position = intent.getIntExtra("position",0);
             newCoin = coins.get(position);
-            System.out.println(newCoin.getName());
+            //System.out.println(newCoin.getName());
         }
+         */
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        updateUi();
 
-        //Sets the text of the widgets in the layout file to the values of the coin object we got earlier
-        System.out.println(newCoin.getName());
-        name.setText(newCoin.getName());
-        symbol.setText(newCoin.getSymbol());
-        value.setText(formatter.format(Double.valueOf(newCoin.getPriceUsd())));
-        change1h.setText(String.valueOf(newCoin.getPercentChange1h() + " %"));
-        change24h.setText(String.valueOf(newCoin.getPercentChange24h()) + " %");
-        change7d.setText(String.valueOf(newCoin.getPercentChange7d()) + " %");
-        marketcap.setText(formatter.format(Double.valueOf(newCoin.getMarketCapUsd())));
-        volume.setText(Double.toString(newCoin.getVolume24()));
-
-        //Listener that allows the search button to do what is under onClick() when clicked
-        search.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                googleCoin(newCoin.getName());
-            }
-        });
         return v;
     }
 
@@ -153,5 +131,40 @@ public class DetailFragment extends Fragment {
         String url = "https://www.google.com/search?q=" + coinName;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
+    }
+
+    private void updateUi() {
+        //Pair the variables in the file with the widgets in the layout file
+        View rootView = getView();
+        if (newCoin != null) {
+            name = (TextView) rootView.findViewById(R.id.name);
+            symbol = rootView.findViewById(R.id.symbol);
+            value = rootView.findViewById(R.id.value);
+            change1h = rootView.findViewById(R.id.change1h);
+            change24h = rootView.findViewById(R.id.change24h);
+            change7d = rootView.findViewById(R.id.change7d);
+            marketcap = rootView.findViewById(R.id.marketcap);
+            volume = rootView.findViewById(R.id.volume);
+            search = rootView.findViewById(R.id.search);
+
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
+            //Sets the text of the widgets in the layout file to the values of the coin object we got earlier
+            name.setText(newCoin.getName());
+            symbol.setText(newCoin.getSymbol());
+            value.setText(formatter.format(Double.valueOf(newCoin.getPriceUsd())));
+            change1h.setText(String.valueOf(newCoin.getPercentChange1h() + " %"));
+            change24h.setText(String.valueOf(newCoin.getPercentChange24h()) + " %");
+            change7d.setText(String.valueOf(newCoin.getPercentChange7d()) + " %");
+            marketcap.setText(formatter.format(Double.valueOf(newCoin.getMarketCapUsd())));
+            volume.setText(Double.toString(newCoin.getVolume24()));
+
+            //Listener that allows the search button to do what is under onClick() when clicked
+            search.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    googleCoin(newCoin.getName());
+                }
+            });
+        }
     }
 }

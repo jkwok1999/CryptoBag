@@ -39,17 +39,22 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         //String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);//Gets the intent with the specified key
-        int position = intent.getIntExtra(MainActivity.EXTRA_MESSAGE, 0);
+        String position = intent.getStringExtra(DetailFragment.ARG_ITEM_ID);
 
         //newCoin = Coin.searchCoin(message);
         //newCoin = Coin.getCoins().get(position);
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
+        Bundle arguments = new Bundle();
+        arguments.putString(DetailFragment.ARG_ITEM_ID, position);
         Fragment fragment = new DetailFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.scrollDetailActivity, fragment).commit();
+        fragment.setArguments(arguments);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.scrollDetailActivity, fragment)
+                .commit();
     }
 }
