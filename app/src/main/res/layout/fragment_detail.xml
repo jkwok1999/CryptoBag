@@ -17,8 +17,8 @@
         android:layout_marginRight="32dp"
         android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView8" />
+        app:layout_constraintStart_toEndOf="@+id/ivLogo"
+        app:layout_constraintTop_toTopOf="@+id/ivLogo" />
 
     <TextView
         android:id="@+id/symbol"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/ivLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -52,7 +52,7 @@
         android:layout_marginTop="32dp"
         android:text="Value (USD)"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
     <TextView
         android:id="@+id/textView6"

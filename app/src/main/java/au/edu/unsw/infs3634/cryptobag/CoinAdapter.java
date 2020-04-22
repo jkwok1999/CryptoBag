@@ -2,15 +2,19 @@
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         @Override
         public void onClick(View v) {
             Coin coin = (Coin) v.getTag();
+            System.out.println(v.getTag());
             if (wideScreen) {
                 Bundle arguments = new Bundle();
                 arguments.putString(DetailFragment.ARG_ITEM_ID, coin.getId());
@@ -69,6 +74,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         private TextView coinName;
         private TextView value;
         private TextView change1h;
+        private ImageView image;
 
         //Constructor for the CoinViewHolder
         public CoinViewHolder(View v) { //}, RecyclerViewClickListener listener) {
@@ -81,6 +87,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
             coinName = (TextView) itemView.findViewById(R.id.tvName);
             value = (TextView) itemView.findViewById(R.id.tvValue);
             change1h = (TextView) itemView.findViewById(R.id.tvChange);
+            image = v.findViewById(R.id.ivArt);
             //itemView.setOnClickListener(this);
         }
 
@@ -117,12 +124,23 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
         Coin coin = mCoins.get(position);
+        Glide.with(holder.itemView) //Specify view
+                .load("https://c1.coinlore.com/img/" + coin.getNameid() + ".png") //Load from provided URL
+                .fitCenter()
+                .into(holder.image);
         holder.coinName.setText(coin.getName());
         //holder.value.setText(formatter.format(coin.getValue()));
         //holder.change1h.setText(Double.toString(coin.getChange1h()) + " %");
 
         holder.value.setText(NumberFormat.getCurrencyInstance().format(Double.valueOf(coin.getPriceUsd())));
         holder.change1h.setText(coin.getPercentChange24h() + " %");
+        //To-do Set Colour
+        if (Double.valueOf(coin.getPercentChange24h()) > 0 ) {
+            holder.change1h.setTextColor(Color.GREEN);
+        }
+        else if (Double.valueOf(coin.getPercentChange24h()) < 0) {
+            holder.change1h.setTextColor(Color.RED);
+        }
         holder.itemView.setTag(coin);
         holder.itemView.setOnClickListener(mOnClickListener);
     }
